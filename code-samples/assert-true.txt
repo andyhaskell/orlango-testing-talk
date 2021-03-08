@@ -1,0 +1,3 @@
+assert.True(
+    t, IsSlothful("Nothing like an iced hibiscus tea! 🧊🌺")
+)

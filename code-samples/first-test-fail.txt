@@ -1,0 +1,5 @@
+=== RUN   TestIsSlothful
+    sloths_test.go:21: Sloths rule! is supposed to be slothful
+--- FAIL: TestIsSlothful (0.00s)
+exit status 1
+FAIL	github.com/andyhaskell/orlango-testing-talk/sloths	0.207s

@@ -1,0 +1,13 @@
+type isSlothfulTestCase struct {
+	str      string
+	expected bool
+}
+
+var isSlothfulTestCases = []isSlothfulTestCase{
+	{str: "hello, world!",                               expected: false},
+	{str: "hello, slothful world!",                      expected: true},
+    {str: "🦥 omw will be there in 2400 minutes!",       expected: true},
+	{str: "Sloths rule!",                                expected: true},
+	{str: "Nothing like an iced hibiscus tea! 🧊🌺",     expected: true},
+	{str: "Get your 🌺 flowers! They're going fast! 🏎️", expected: false},
+}

@@ -1,0 +1,10 @@
+Jest (JavaScript)
+expect(IsSlothful('hello, world!')).toBeFalse()
+
+RSpec (Ruby)
+expect(IsSlothful 'hello, world!') to be false
+
+Go test
+if IsSlothful("hello, world!") {
+    t.Error("hello, world is not supposed to be slothful")
+}

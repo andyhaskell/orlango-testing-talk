@@ -1,0 +1,381 @@
+# Intro to testing in Go
+&y Haskell (@AndyHaskell 2013)
+3 Mar 2021
+Tags: golang, testing, beginners, codenewbie
+
+## About me
+
+&y Haskell
+
+* Software engineer at Salesforce
+* Google Developer Expert in Go
+* Long-time Gopher
+* Sloth enthusiast 🦥🌺
+* All about community
+
+You can follow me on Twitter at [@AndyHaskell2013](https://twitter.com/andyhaskell2013) and dev.to at [andyhaskell](https://dev.to/andyhaskell)
+
+This talk was originally given at [OrlanGo](https://meetup.com/orlango) and adapted from Keynote slides to `present` slides to be copy-paste friendly.
+
+## About this talk
+
+What will you learn?
+
+* Why write automated tests?
+* What it looks like building some code while giving it automated test coverage
+* What packages you're likely to use
+
+If you’re coming to Go from languages like JavaScript or Ruby, or you’re new to automated testing in general, this talk is for you!
+
+And of course, if you're new to Go I want to say
+
+## Welcome to the #GopherDen!
+
+.image ./img/gophers-bag.jpeg
+
+.caption My Gopher plushies popping out of my backpack
+
+## Why write automated tests?
+
+* They make you write out each category of scenario your code is intended to work with
+* Unit tests allow individual parts of your system to serve as a point of truth as you build on top of them or refactor them
+* Automated testing is more precise and easier to repeat than manual testing
+  * But manual testing still is useful for things like testing that a product is usable to humans!
+* Test coverage serves as “the other documentation”, providing real-world examples of how code might be used
+
+## Let's write some tests
+
+First we need some Go code to test
+
+Make a folder titled `sloths` and save this code to `sloths.go`
+
+.code ./code-samples/original-is-slothful-func.txt
+
+## A first test
+
+The first thing we will need is a scenario to test.
+
+Since this is kind of a “hello world” of test coverage, let’s test whether “hello, world” is a slothful string.
+
+The test would look like...
+
+## A first test
+
+.code ./code-samples/original-is-slothful-test.txt
+
+Since we expect "hello, world!" not to be slothful, in the if statement, if `IsSlothful` returns true, we error, causing the test to fail.
+
+## Running the test
+
+Right when you install Go, the `go` tool has a test runner with the `test` subcommand, which runs all of the tests in the package you're currently in.
+
+Run the test in the command line with `go test -v` (-v flag outputs the name of each test function you run) and you'll get output like...
+
+## Running the test
+
+.code ./code-samples/first-test-output.txt
+
+When you run the test with `go test -v`, you will see output including the functions the test runner ran, how long they took, and whether or not they passed.
+
+As you can see...
+
+## Our test passed!
+
+.image ./img/lola-phone.png
+
+.caption Lola the Micropanda, a cute Havanese dog, looking at a cell phone and smiling. She's probably making prank calls.
+
+## Taking a closer look at our test
+
+There are four things to highlight about the test:
+
+.code ./code-samples/original-is-slothful-test.txt /^package/,/^\)/
+
+First, we import a Go standard library package called `testing`, which as you'll see, gives us a small set of rules on how to write Go tests
+
+## Taking a closer look at our test
+
+Second, let's look at the function signature of our test function
+
+.code ./code-samples/original-is-slothful-test.txt /^func/
+
+* All test functions take in as their only argument a `testing.T`; this object keeps track of whether each test case in your code passed or failed.
+* All test functions start with the word `Test` as its first camelCase word; this tells the `go test` command which functions it is supposed to run.
+
+## Takinng a closer look at our test
+
+Third, let's take a look at assertions in JS/Ruby vs Go
+
+.code ./code-samples/assertions.txt
+
+In Jest or RSpec, we would assert that IsSlothful returns false on the string “hello, world!” by using the English-like statement `expect IsSlothful 'hello, world!' to be false`. If hello, world returns true, the test fails.
+
+In Go on the other hand, out of the box instead of expect-style functions, we use the testing.T to keep track of whether a given test passed or failed; assertions are typically written like if statements and to make an assertion fail, we run `t.Error`.
+
+## Four ways to make a test fail in Go
+ 
+* `t.Error`
+  * fail a test and show an error message
+* `t.Fail`
+  * fail a test, but don't show an error message
+* `t.Fatal`
+  * fail a test with an error message, and stop the testing completely
+  * useful if you get a show-stopping error where the results of the rest of your test won't make sense if that error happened
+* `t.FailNow`
+  * fail a test without an error message, and stop the testing completely
+
+## Takinng a closer look at our test
+
+The fourth and final thing to look at is the directory tree for the `sloths` package.
+
+.code ./code-samples/tree.txt
+
+All test files in Go have a name that ends with `_test.go`, which tells the Go Test command line tool where to find the test code for your Go project.
+
+The other thing this does is **for the coder**. Because Go Test requires all your test code to be named this way, that means if you join an engineering team that does Go, or you start contributing to an open source project in Go, **right on day 1** you can find where all the testing code is!
+
+## Adding more assertions
+
+.image ./img/lola-grass.png
+
+.caption Lola laying in the grass looking for bugs
+
+## Adding more assertions
+
+Our code could use some more test coverage. We tested what happens with a string that we don't expect to be slothful, but we should also test what happens when we pass in a string that **is slothful**.
+
+In general when you are unit testing a part of your code, you want a test case for each logical branch of your tests, so that would be:
+
+* A string with the word sloth
+* A string with the sloth emoji
+* ✅ a string with neither
+
+## Adding more assertions
+
+Here's three more strings to test `IsSlothful` on:
+
+.code ./code-samples/more-is-slothful-assertions.txt
+
+Run `go test -v` and you will get...
+
+## Adding more assertions
+
+A failing test?
+
+.code ./code-samples/first-test-fail.txt
+
+But that means your test did its job; it detected a bug in the code that caused us to know `IsSlothful` is returning false for "Sloths rule!" even though it's supposed to return true.
+
+## Fixing the bug
+
+We have an if statement for checking whether a string contains the word sloth, but it only catches that if "sloth" is all-lowercase.
+
+.code ./code-samples/original-is-slothful-func.txt /^\tif/
+
+The strings package has the fix we need.
+
+## Fixing the bug
+
+By adding the call to `strings.ToLower` at the beginning of the function, we are checking if the string in all-lowercase matches any of the if statements we had. So capitalized "Sloth" should pass.
+
+.code ./code-samples/fix-lowercase.txt /^func/,/^\t} else if/
+
+Run `go test -v` one more time and...
+
+## Our test passed again!
+
+.image ./img/lola-beach.png
+
+.caption Lola sprinting through Crane Beach in celebration
+
+## Adding to our code
+
+.image ./img/gophers-crane.png
+
+.caption My Gopher plushies looking at construction cranes
+
+## Adding to our code
+
+Now that we have some good test coverage for our `IsSlothful` function, we're in a good place to confidently add more logic to it.
+
+For example, sloths love eating hibiscus flowers, so strings containing the 🌺 emoji are slothful.
+
+But sloths are also laid-back and not in a rush, so if a string contains the 🌺 emoji but also has the 🏎️ emoji, then the string is not slothful.
+
+## Let's try some test driven development
+
+For TDD, we start by writing the tests that we want to pass once we finish refactoring our code.
+
+So we have one if statement for a string with the hibiscus emoji, and one for a string with both the hibiscus and race car emojis.
+
+.code ./code-samples/test-hibiscus-emoji.txt
+
+Run go test -v and...
+
+## Adding to our code
+
+.code ./code-samples/hibiscus-test-output.txt
+
+Our test failed again, but in TDD that's a good thing; in TDD we see our tests fail so that we know a test passed specifically **because** of our code change.
+
+## Adding to our code
+
+In the following code we add the variable `slothsLikeThis` to the if statement; it's true if the string passed in contains the hibiscus emoji but not the race car emoji.
+
+.code ./code-samples/complete-is-slothful.txt
+
+Run `go test -v` and you'll get
+
+## 
+
+.code ./code-samples/passing-output.txt
+
+All our tests passing! Our refactor is complete!
+
+By the way, if you have a lot of tests and want to just run a few, you can use the `-run` flag on `go test`, which only runs tests matching the regular expression passed into the `-run` flag.
+
+For example, to run just `TestHibiscus`, you can run `go test -v -run Hibiscus`.
+
+## A table testing refactor
+
+.image ./img/gophers-table.png
+
+.caption My gopher plushies on a table with some fruit
+
+## A table testing refactor
+
+We have two tests with a total of six assertions, but all the assertions have the same structure; pass a string into `IsSlothful`, and have the `testing.T` error if we don't get back the expected result.
+
+So we could turn our assertion into a helper function and then run assertions on all of our test cases in one loop to simplify our code.
+
+This technique is called **table testing**.
+
+## A table testing refactor
+
+Here's our helper function.
+
+.code ./code-samples/assert-is-slothful.txt
+
+In our `assertIsSlothful` helper, we take in our `testing.T`, the string we're testing, and the result we expect from the `IsSlothful` function.
+
+We use printf-style string formatting in `Errorf` to formulate the error message so if we get an error, it includes the string that caused the test to fail.
+
+## A table testing refactor
+
+Here is our slice of test cases, as structs containing the string and expected result.
+
+.code ./code-samples/test-cases.txt
+
+## A table testing refactor
+
+Now we can refactor our `TestIsSlothful` to loop over the slice of test cases, running our `assertIsSlothful` helper on each one. Here's what our refactored test function looks like.
+
+.code ./code-samples/is-slothful-loop.txt
+
+You can make custom assertions by making helper functions that have access to the `testing.T`.
+
+If you see code that makes a logical step that gets repeated a lot in your team's tests, that might be an opportunity to make a custom assertion to simplify the test and make it easier to maintain!
+
+## Testing out Testify
+
+.image ./img/googly-eyes.png
+
+.caption Jetty in Rockport with googly eyes
+
+## Testing out Testify
+
+A lot of assertions in Go are so common across many Go projects that Mat Ryer, a famous Gopher, made the Testify package for common testing functionality.
+
+Since it **isn't** part of the Go standard library, we need to download it with
+
+`go install github.com/stretchr/testify/assert`.
+
+## Testing out Testify
+
+Here's what assertions look like in Jest vs. RSpec vs. Testify.
+
+.code ./code-samples/assertions-with-testify.txt
+
+While it isn't as much like an English sentence as Jest and RSpec tests are, it still follows the same idea; the `assert` package exports many functions for running assertions in Go.
+
+## Testing out Testify
+
+Like with `t.Errorf`, the last parameters of a Testify assertion are printf-style string formatting for a custom error message. For example:
+
+.code ./code-samples/assert-false-with-message.txt
+
+The custom error message is optional and Testify gives sensible default error messages, but a custom error message can help you document exactly **what** an assertion is testing when it isn't obvious from the code.
+
+## Testing out Testify
+
+Just like `assert.False`, there is `assert.True` for when you expect some expression to be true.
+
+.code ./code-samples/assert-true.txt
+
+## Testing out Testify
+
+`assert.Equal` is used for checking that the Go value you got matches the Go value you expected.
+
+.code ./code-samples/assert-equal.txt
+
+When you do a comparison assertion in Testify, you pass in the value you expected as the first argument after your testing.T, and the value you got as the second argument after testing.T.
+
+## Testing out Testify
+
+`assert.Len`, `assert.Contains`, and `assert.NotContains` are useful assertions when working with slices and maps; you can test whether a slice or map has the expected number of items in it, or contains or doesn't contain a certain item.
+
+.code ./code-samples/assert-contains.txt
+
+## Testing out Testify
+
+`assert.Error` and `assert.NoError` are used for assertions about whether or not a certain piece of Go code errored.
+
+For example, we assert in the following code that we didn't get an error deserializing this valid JSON of the approximate coordinates of Boston.
+
+.code ./code-samples/assert-noerror.txt
+
+## Testing out Testify
+
+Like how the standard library’s testing package has `t.Fatal` for when you get a show-stopping error, all assert functions in the Testify Assert package have counterparts in the Testify Require package that stop a test immediately if a Require assertion fails.
+
+For example, if deserializing this JSON fails, then the results of asserting the value of our Location's latitude coordinate wouldn't make sense since nothing got deserialized.
+
+.code ./code-samples/require-noerror.txt /^require/,/^assert/
+
+## Testing out Testify
+
+Let’s take a look at how we might use Testify assertions in that table test that we did for the IsSlothful function. 
+
+Earlier we made this slice of `isSlothfulTestCase`s where we have the string we’re passing into `IsSlothful`, and what we expect that function to return.
+
+.code ./code-samples/test-cases.txt
+
+## Testing out Testify
+
+And before, we were passing each test case's string and expected value into the `assertIsSlothful` helper function we wrote.
+
+.code ./code-samples/is-slothful-loop.txt
+
+## Testing out Testify
+
+But instead of the assertion we wrote, we can also use `assert.Equal`. Here's what that looks like:
+
+.code ./code-samples/is-slothful-loop-with-testify.txt
+
+NOTE: Not all Gophers use Testify and some prefer to stick to the standard library, but if you like the Jest/RSpec assertion pattern, Testify is worth a try help you write tests without reinventing the wheel on your assertions.
+
+## Where can we go next with Go tests?
+
+* Go tests are ultimately just Go code that happens to use the `testing` package
+  * so you're already ready to put tests in your own Go code!
+* You can read other people's go tests for ideas on how to make things testable and also as "the other documentation" about how to use code in packages you're using.
+* For web developers, `net/http/httptest` in the standard library provides utilities for testing HTTP handlers in Go
+* If you like Testify and your tests share a lot of common setup, the Testify Suite package is worth looking at
+
+Until next time, keep writing Go tests and...
+
+## Stay slothful!
+
+.image ./img/sloth.jpeg
+
+.caption Three-toed sloth in a tree, image is public domain, photo credit to Stefan Laube

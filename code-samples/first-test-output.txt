@@ -1,0 +1,4 @@
+=== RUN   TestIsSlothful
+--- PASS: TestIsSlothful (0.00s)
+PASS
+ok  	github.com/andyhaskell/orlango-testing-talk/sloths	0.227s

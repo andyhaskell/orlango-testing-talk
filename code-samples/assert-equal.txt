@@ -1,0 +1,2 @@
+assert.Equal(t, true, "hello, slothful world!")
+assert.Equal(t, 3, numberOfClawsOnAThreeToedSloth)

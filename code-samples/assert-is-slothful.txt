@@ -1,0 +1,9 @@
+func assertIsSlothful(t *testing.T, s string, expected bool) {
+	if IsSlothful(s) != expected {
+		if expected {
+			t.Errorf("%s is supposed to be slothful", s)
+		} else {
+			t.Errorf("%s is not supposed to be slothful", s)
+		}
+	}
+}

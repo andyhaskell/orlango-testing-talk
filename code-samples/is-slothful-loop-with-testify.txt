@@ -1,0 +1,5 @@
+func TestIsSlothful(t *testing.T) {
+	for _, c := range isSlothfulTestCases {
+		assert.Equal(t, c.expected, IsSlothful(c.str))
+	}
+}

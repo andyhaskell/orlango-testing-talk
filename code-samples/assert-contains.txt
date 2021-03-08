@@ -1,0 +1,4 @@
+someCuteAnimals := []string{"sloths", "lemurs", "opossums"}
+
+assert.Len(t, someCuteAnimals, 3)
+assert.Contains(t, someCuteAnimals, "sloths")

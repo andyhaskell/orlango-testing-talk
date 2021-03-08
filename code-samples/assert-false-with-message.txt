@@ -1,0 +1,5 @@
+assert.False(
+    t,
+    IsSlothful("Get your 🌺 flowers! They're going fast! 🏎️"),
+    "🏎️ cancels out 🌺 emoji's slothfulness",
+)

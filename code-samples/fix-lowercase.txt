@@ -1,0 +1,9 @@
+func IsSlothful(s string) bool {
+    s = strings.ToLower(s)
+	if strings.Contains(s, "sloth") {
+		return true
+	} else if strings.Contains(s, "🦥") {
+		return true
+	}
+	return false
+}

@@ -1,0 +1,7 @@
+=== RUN   TestIsSlothful
+--- PASS: TestIsSlothful (0.00s)
+=== RUN   TestHibiscusEmoji
+    sloths_test.go:27: Nothing like an iced hibiscus tea! 🧊🌺 is supposed to be slothful
+--- FAIL: TestHibiscusEmoji (0.00s)
+exit status 1
+FAIL	github.com/andyhaskell/orlango-testing-talk/sloths	0.234s

@@ -1,0 +1,10 @@
+type Location struct {
+    Lat float64 `json:"lat"`
+    Lng float64 `json:"lng"`
+}
+
+var loc Location
+require.NoError(
+    t, json.Unmarshal([]byte(`{"lat": 42.36, "lng": -71.06}`)),
+)
+assert.Equal(t, 42.36, loc.Lat)
